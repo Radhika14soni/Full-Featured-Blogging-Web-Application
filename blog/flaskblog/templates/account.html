@@ -1,0 +1,40 @@
+  
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <div class="media">
+      <img class="rounded-circle account-img" src={{image_file}}>
+      <div class="media-body">
+        <h2 class="account-heading">{{ current_user.username }}</h2>
+        <p class="text-secondary">{{ current_user.email }}</p>
+        <p class="text-secondary">
+            {% if current_user.bio %}
+                {{ current_user.bio }}
+            {% else %}
+                Bio
+            {%endif%}
+        </p>
+      </div>
+      <a class="nav-item nav-link" href="{{ url_for('editaccount')}}">Edit Profile</a>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h3>My posts</h3>
+    {% for post in posts %}
+
+          <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pic/' + post.author.image_file) }}">
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="#">{{ post.author.username }}</a>
+                <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%y') }}</small>
+              </div>
+              <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
+              <p class="article-content">{{ post.content }}</p>
+            </div>
+          </article>
+
+    {% endfor %}
+  </div>
+{% endblock content %}
