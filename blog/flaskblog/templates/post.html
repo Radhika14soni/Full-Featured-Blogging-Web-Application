@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+{% block head %}
+  {{super()}}
+  <style>
+    body  { 
+      
+        background: url('static/profile_pic/background.jpg') no-repeat center center fixed;
+        background-position:50% 50%;
+        background-size: cover;
+        height: 100%;
+        -webkit-background-size: cover;
+  
+          }
+    </style>
+{% endblock %}
+{% block content %}
+
+    
+        <article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pic/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{{url_for('user_posts',username=post.author.username)}}">{{ post.author.username }}</a>
+              <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%y') }}</small>
+              
+                {% if post.author == current_user %}
+                <div>
+                  <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('updatepost', post_id=post.id) }}">Update</a>
+                  <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                </div>
+                {% endif %}              
+            </div>
+            <h2 class="article-title">{{ post.title }}</h2>
+            <br><br>
+            <div class="content-section">
+              <h4><p class="article-content">{{ post.content }}</p></h4>
+            </div>
+            
+
+            <br><br>
+
+
+            <div class="row"> 
+              <div class="element1 col-md-5"> 
+                <h4>Likes : {{likes}}</h4>
+              </div> 
+              <div class="element2 col-md-7"> 
+                {% if action == "Like" %}
+                  <a class="btn btn-primary btn-sm mt-1 mb-1 fa fa-thumbs-up"  href="{{ url_for('likepost', post_id=post.id) }}">Like</a>
+                {% elif action == "Unlike" %}
+                  <a class="btn btn-primary btn-sm mt-1 mb-1 fa fa-thumbs-down" href="{{ url_for('likepost', post_id=post.id) }}">Unlike</a>
+                {% endif %}
+              </div> 
+              </div> 
+          
+            
+          
+
+          </div>
+        </article>
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <form action="{{ url_for('deletepost', post_id=post.id) }}" method="POST">
+                  <input class="btn btn-danger" type="submit" value="Delete">
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        </article>
+        
+        <!--Comment Form-->
+        <div class="content-section">
+          <form method="POST" action="">
+              {{ form.hidden_tag() }}
+              <fieldset class="form-group">
+                  <legend class="border-bottom mb-4">{{ legend }}</legend>
+                  
+                  <div class="form-group">
+                      {{ form.content.label(class="form-control-label") }}
+                      {% if form.content.errors %}
+                          {{ form.content(class="form-control form-control-lg is-invalid") }}
+                          <div class="invalid-feedback">
+                              {% for error in form.content.errors %}
+                                  <span>{{ error }}</span>
+                              {% endfor %}
+                          </div>
+                      {% else %}
+                          {{ form.content(class="form-control form-control-lg") }}
+                      {% endif %}
+                  </div>
+                </fieldset>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+        </div>
+
+        <!--Display Comments-->
+        <div class="content-section">
+
+
+          <h2>Comments</h2>
+          {% for c in cs %}
+              <article class="media content-section">
+                <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pic/' + c.commenter.image_file) }}">
+                <div class="media-body">
+                  <div class="article-metadata">
+                    <a class="mr-2" href="#">{{ c.commenter.username }}</a>
+                    <small class="text-muted">{{ c.published }}</small>
+                  </div>
+                  <h5><p class="article-content">{{ c.content }}</p></h5>
+                </div>
+              </article>
+          {% endfor %}
+        </div>
+        
+  
+{% endblock content %}
