@@ -1,0 +1,44 @@
+{% extends "l_forSearch.html" %}
+{% block content %}
+
+<div class="content-section">
+  <form method="POST" action="">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Search Post</legend>
+          
+          <div class="form-group">
+              {{ form.category.label(class="form-control-label") }}
+              {% if form.category.errors %}
+                  {{ form.category(class="form-control form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in form.category.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div>
+              {% else %}
+                  {{ form.category(class="form-control form-control-lg") }}
+              {% endif %}
+          </div>
+          <div class="form-group">
+            {{ form.search(class="btn btn-outline-info") }}
+        </div>
+      </fieldset>
+      </form>
+      </div>
+
+
+    {% for c in cat %}
+        <article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pic/' + c.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ c.author }}</a>
+              <small class="text-muted">{{ c.date_posted }}</small>
+            </div>
+            <h2><a class="article-title" href="{{url_for('post',post_id=c.id)}}">{{ c.title }}</a></h2>
+            <p class="article-content">{{ c.content }}</p>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}
